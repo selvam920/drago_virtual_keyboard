@@ -1,14 +1,4 @@
 
-<br>
-<p align="center">
-<img style="height:350px;" alt="FlutterBlue" src="https://github.com/selvam920/drago_virtual_keyboard/blob/master/screen1.png?raw=true" />
-</p>
-<br>
-<p align="center">
-<img style="height:350px;" alt="FlutterBlue" src="https://github.com/selvam920/drago_virtual_keyboard/blob/master/screen2.png?raw=true" />
-</p>
-<hr>
-
 # drago_virtual_keyboard
 
 ## Introduction
@@ -192,6 +182,4 @@ setState(() {});
 }
 ```
 
-- [Gurgen Hovhannisyan](https://github.com/selvam920)
-- [LICENSE - MIT](https://github.com/selvam920/drago_virtual_keyboard/blob/master/LICENSE)
 
