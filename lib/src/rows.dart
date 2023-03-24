@@ -122,7 +122,7 @@ List<VirtualKeyboardKey> _getKeyboardRowKeys(rowNum) {
 }
 
 /// Returns a list of VirtualKeyboard rows with `VirtualKeyboardKey` objects.
-List<List<VirtualKeyboardKey>> _getKeyboardRows() {
+List<List<VirtualKeyboardKey>> _getKeyboardRows(bool isOnChange) {
   // Generate lists for each keyboard row.
   return List.generate(_keyRows.length, (int rowNum) {
     // Will contain the keyboard row keys.
@@ -133,28 +133,13 @@ List<List<VirtualKeyboardKey>> _getKeyboardRows() {
       case 3:
         // String keys.
         rowKeys = _getKeyboardRowKeys(rowNum);
-
-        // 'Backspace' button.
-        rowKeys.add(
-          VirtualKeyboardKey(
-              keyType: VirtualKeyboardKeyType.Action,
-              action: VirtualKeyboardKeyAction.Backspace),
-        );
         break;
 
-      // case 2:
-      //   // String keys.
-      //   rowKeys = _getKeyboardRowKeys(rowNum);
+      case 2:
+        // String keys.
+        rowKeys = _getKeyboardRowKeys(rowNum);
 
-      //   // 'Return' button.
-      //   rowKeys.add(
-      //     VirtualKeyboardKey(
-      //         keyType: VirtualKeyboardKeyType.Action,
-      //         action: VirtualKeyboardKeyAction.Return,
-      //         text: '\n',
-      //         capsText: '\n'),
-      //   );
-      //   break;
+        break;
       // case 3:
       //   // Left Shift
       //   rowKeys.add(
@@ -186,10 +171,27 @@ List<List<VirtualKeyboardKey>> _getKeyboardRows() {
               capsText: ' ',
               action: VirtualKeyboardKeyAction.Space),
         );
+        if (!isOnChange)
+          // 'Return' button.
+          rowKeys.add(
+            VirtualKeyboardKey(
+                keyType: VirtualKeyboardKeyType.Action,
+                action: VirtualKeyboardKeyAction.Done),
+          );
 
+        break;
+      case 0:
+        rowKeys = _getKeyboardRowKeys(rowNum);
+        // 'Backspace' button.
+        rowKeys.add(
+          VirtualKeyboardKey(
+              keyType: VirtualKeyboardKeyType.Action,
+              action: VirtualKeyboardKeyAction.Backspace),
+        );
         break;
       default:
         rowKeys = _getKeyboardRowKeys(rowNum);
+        break;
     }
 
     return rowKeys;

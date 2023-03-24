@@ -81,12 +81,16 @@ class _MyHomePageState extends State<MyHomePage> {
             Container(
               color: Colors.deepPurple,
               child: DragoVirtualKeyboard(
-                  height: 300,
-                  textColor: Colors.white,
-                  type: isNumericMode
-                      ? VirtualKeyboardType.Numeric
-                      : VirtualKeyboardType.Alphanumeric,
-                  textController: _controllerText),
+                height: 300 + 37,
+                textColor: Colors.white,
+                type: isNumericMode
+                    ? VirtualKeyboardType.Numeric
+                    : VirtualKeyboardType.Alphanumeric,
+                isOnChange: false,
+                onReturn: (val) {
+                  print(val);
+                },
+              ),
             )
           ],
         ),

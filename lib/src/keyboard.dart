@@ -10,9 +10,7 @@ const int _virtualKeyboardBackspaceEventPerioud = 20;
 class DragoVirtualKeyboard extends StatefulWidget {
   /// Keyboard Type: Should be inited in creation time.
   final VirtualKeyboardType type;
-
-  /// The text controller
-  final TextEditingController textController;
+  final bool isOnChange;
 
   /// Virtual keyboard height. Default is 300
   final double height;
@@ -23,7 +21,7 @@ class DragoVirtualKeyboard extends StatefulWidget {
   /// Font size for keyboard keys.
   final double fontSize;
 
-  final Function? onClose;
+  final Function(String)? onReturn;
 
   /// The builder function will be called for each Key object.
   final Widget Function(BuildContext context, VirtualKeyboardKey key)? builder;
@@ -31,17 +29,17 @@ class DragoVirtualKeyboard extends StatefulWidget {
   /// Set to true if you want only to show Caps letters.
   final bool alwaysCaps;
 
-  DragoVirtualKeyboard(
-      {Key? key,
-      required this.type,
-      required this.textController,
-      this.builder,
-      this.onClose,
-      this.height = _virtualKeyboardDefaultHeight,
-      this.textColor = Colors.black,
-      this.fontSize = 14,
-      this.alwaysCaps = false})
-      : super(key: key);
+  DragoVirtualKeyboard({
+    Key? key,
+    required this.type,
+    this.builder,
+    this.onReturn,
+    this.isOnChange = false,
+    this.height = _virtualKeyboardDefaultHeight,
+    this.textColor = Colors.black,
+    this.fontSize = 14,
+    this.alwaysCaps = false,
+  }) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -55,12 +53,15 @@ class _DragoVirtualKeyboardState extends State<DragoVirtualKeyboard> {
   // The builder function will be called for each Key object.
   Widget Function(BuildContext context, VirtualKeyboardKey key)? builder;
   late double height;
-  late TextEditingController textController;
   late Color textColor;
   late double fontSize;
   late bool alwaysCaps;
   // Text Style for keys.
   late TextStyle textStyle;
+  double displayTextHeight = 37;
+
+  /// The text controller
+  final textController = TextEditingController();
 
   // True if shift is enabled.
   bool isShiftEnabled = false;
@@ -87,7 +88,14 @@ class _DragoVirtualKeyboardState extends State<DragoVirtualKeyboard> {
   void initState() {
     super.initState();
 
-    textController = widget.textController;
+    textController.addListener(() {
+      if (widget.isOnChange) {
+        widget.onReturn?.call(textController.text);
+      } else {
+        setState(() {});
+      }
+    });
+
     type = widget.type;
     height = widget.height;
     textColor = widget.textColor;
@@ -113,7 +121,29 @@ class _DragoVirtualKeyboardState extends State<DragoVirtualKeyboard> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.center,
-        children: _rows(),
+        children: [
+          if (!widget.isOnChange)
+            SizedBox(
+              height: displayTextHeight,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  textController.text.isEmpty
+                      ? Container()
+                      : Card(
+                          color: Colors.white,
+                          child: Padding(
+                            padding: const EdgeInsets.all(5),
+                            child: Text(
+                              textController.text,
+                              textAlign: TextAlign.center,
+                            ),
+                          )),
+                ],
+              ),
+            ),
+          ..._rows()
+        ],
       ),
     );
   }
@@ -136,7 +166,7 @@ class _DragoVirtualKeyboardState extends State<DragoVirtualKeyboard> {
     List<List<VirtualKeyboardKey>> keyboardRows =
         type == VirtualKeyboardType.Numeric
             ? _getKeyboardRowsNumeric()
-            : _getKeyboardRows();
+            : _getKeyboardRows(widget.isOnChange);
 
     // Generate keyboard row.
     List<Widget> rows = List.generate(keyboardRows.length, (int rowNum) {
@@ -198,7 +228,7 @@ class _DragoVirtualKeyboardState extends State<DragoVirtualKeyboard> {
         _onKeyPress(key);
       },
       child: Container(
-        height: height / _keyRows.length,
+        height: height / (_keyRows.length + (widget.isOnChange ? 0 : 1)),
         child: Center(
             child: Text(
           alwaysCaps
@@ -230,7 +260,7 @@ class _DragoVirtualKeyboardState extends State<DragoVirtualKeyboard> {
           break;
         case VirtualKeyboardKeyAction.Done:
           {
-            if (widget.onClose != null) widget.onClose!.call();
+            widget.onReturn!.call(textController.text);
             break;
           }
         default:
@@ -278,10 +308,14 @@ class _DragoVirtualKeyboardState extends State<DragoVirtualKeyboard> {
         actionKey = Icon(Icons.arrow_upward, color: textColor);
         break;
       case VirtualKeyboardKeyAction.Space:
-        actionKey = actionKey = Icon(Icons.space_bar, color: textColor);
+        actionKey = Icon(Icons.space_bar, color: textColor);
         break;
       case VirtualKeyboardKeyAction.Done:
-        actionKey = Icon(Icons.keyboard_hide, color: textColor);
+        actionKey = Icon(
+          Icons.arrow_circle_right_rounded,
+          color: textColor,
+          size: 35,
+        );
         break;
       case VirtualKeyboardKeyAction.Return:
         actionKey = Icon(
@@ -306,7 +340,7 @@ class _DragoVirtualKeyboardState extends State<DragoVirtualKeyboard> {
         },
         child: Container(
           alignment: Alignment.center,
-          height: height / _keyRows.length,
+          height: height / (_keyRows.length + (widget.isOnChange ? 0 : 1)),
           child: actionKey,
         ),
       ),
