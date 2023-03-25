@@ -64,35 +64,6 @@ class DragoVirtualKeyboardPageState extends State<DragoVirtualKeyboard> {
   bool onSend = false;
 
   @override
-  void didUpdateWidget(DragoVirtualKeyboard oldWidget) {
-    super.didUpdateWidget(oldWidget);
-
-    setState(() {
-      type = widget.type;
-      if (widget.height == 0 &&
-          widget.type != VirtualKeyboardType.OnScreenAlphaNumeric) {
-        height = (widget.type == VirtualKeyboardType.Alphanumeric
-                ? 300
-                : widget.forMobile
-                    ? 220
-                    : 280) +
-            (widget.isOnChange ? 0 : displayTextHeight);
-      } else {
-        height = widget.height;
-      }
-      textColor = widget.textColor;
-      fontSize = widget.fontSize;
-      alwaysCaps = widget.alwaysCaps;
-
-      // Init the Text Style for keys.
-      textStyle = TextStyle(
-        fontSize: fontSize,
-        color: textColor,
-      );
-    });
-  }
-
-  @override
   void initState() {
     super.initState();
 

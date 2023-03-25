@@ -21,10 +21,10 @@ class MyHomePage extends StatefulWidget {
   final String title;
 
   @override
-  _MyHomePageState createState() => _MyHomePageState();
+  MyHomePageState createState() => MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class MyHomePageState extends State<MyHomePage> {
   // Holds the text that user typed.
   String text = '';
 
@@ -127,6 +127,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       keyboardType == VirtualKeyboardType.Numeric ? 300 : null,
                   color: isTransparent ? Colors.transparent : Colors.deepPurple,
                   child: DragoVirtualKeyboard(
+                    key: UniqueKey(),
                     textColor: isTransparent ? Colors.deepPurple : Colors.white,
                     fontSize: isTransparent ? 19 : 17,
                     type: keyboardType,
