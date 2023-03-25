@@ -35,6 +35,8 @@ class _MyHomePageState extends State<MyHomePage> {
   bool isNumericMode = true;
 
   bool isOnchange = false;
+  bool isTransparent = false;
+  bool IsCaps = false;
 
   late TextEditingController _controllerText;
   var keyboardType = VirtualKeyboardType.Alphanumeric;
@@ -76,6 +78,20 @@ class _MyHomePageState extends State<MyHomePage> {
                           isOnchange = !isOnchange;
                         });
                       }),
+                  SwitchListTile(
+                      title: Text('Is Transparent'),
+                      value: isTransparent,
+                      onChanged: (val) {
+                        isTransparent = !isTransparent;
+                        setState(() {});
+                      }),
+                  SwitchListTile(
+                      title: Text('Is Caps'),
+                      value: IsCaps,
+                      onChanged: (val) {
+                        IsCaps = !IsCaps;
+                        setState(() {});
+                      }),
                   SizedBox(height: 10),
                   TextButton(
                       onPressed: () {
@@ -109,11 +125,13 @@ class _MyHomePageState extends State<MyHomePage> {
                 child: Container(
                   width:
                       keyboardType == VirtualKeyboardType.Numeric ? 300 : null,
-                  color: Colors.deepPurple,
+                  color: isTransparent ? Colors.transparent : Colors.deepPurple,
                   child: DragoVirtualKeyboard(
-                    textColor: Colors.white,
+                    textColor: isTransparent ? Colors.deepPurple : Colors.white,
+                    fontSize: isTransparent ? 19 : 17,
                     type: keyboardType,
                     isOnChange: isOnchange,
+                    alwaysCaps: IsCaps,
                     onReturn: (val) {
                       _controllerText.text = val;
                     },

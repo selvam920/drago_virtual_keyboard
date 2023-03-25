@@ -1,9 +1,5 @@
 part of drago_virtual_keyboard;
 
-/// The default keyboard height. Can we overriden by passing
-///  `height` argument to `VirtualKeyboard` widget.
-const double _virtualKeyboardDefaultHeight = 300;
-
 const int _virtualKeyboardBackspaceEventPerioud = 20;
 
 /// Virtual Keyboard widget.
@@ -11,6 +7,7 @@ class DragoVirtualKeyboard extends StatefulWidget {
   /// Keyboard Type: Should be inited in creation time.
   final VirtualKeyboardType type;
   final bool isOnChange;
+  final bool forMobile;
 
   /// Virtual keyboard height. Default is 300
   final double height;
@@ -34,6 +31,7 @@ class DragoVirtualKeyboard extends StatefulWidget {
     required this.type,
     this.builder,
     this.onReturn,
+    this.forMobile = false,
     this.isOnChange = false,
     this.height = 0,
     this.textColor = Colors.black,
@@ -76,7 +74,11 @@ class _DragoVirtualKeyboardState extends State<DragoVirtualKeyboard> {
       type = widget.type;
       if (widget.height == 0 &&
           widget.type != VirtualKeyboardType.OnScreenAlphaNumeric) {
-        height = (widget.type == VirtualKeyboardType.Alphanumeric ? 300 : 280) +
+        height = (widget.type == VirtualKeyboardType.Alphanumeric
+                ? 300
+                : widget.forMobile
+                    ? 220
+                    : 280) +
             (widget.isOnChange ? 0 : displayTextHeight);
       } else {
         height = widget.height;
@@ -116,7 +118,11 @@ class _DragoVirtualKeyboardState extends State<DragoVirtualKeyboard> {
     type = widget.type;
     if (widget.height == 0 &&
         widget.type != VirtualKeyboardType.OnScreenAlphaNumeric) {
-      height = (widget.type == VirtualKeyboardType.Alphanumeric ? 300 : 280) +
+      height = (widget.type == VirtualKeyboardType.Alphanumeric
+              ? 300
+              : widget.forMobile
+                  ? 220
+                  : 280) +
           (widget.isOnChange ? 0 : displayTextHeight);
     } else {
       height = widget.height;
@@ -369,24 +375,12 @@ class _DragoVirtualKeyboardState extends State<DragoVirtualKeyboard> {
     // Switch the action type to build action Key widget.
     switch (key.action!) {
       case VirtualKeyboardKeyAction.Backspace:
-        actionKey = GestureDetector(
-            onLongPress: () {
-              longPress = true;
-              // Start sending backspace key events while longPress is true
-              Timer.periodic(
-                  Duration(milliseconds: _virtualKeyboardBackspaceEventPerioud),
-                  (timer) {
-                if (longPress) {
-                  _onKeyPress(key);
-                } else {
-                  // Cancel timer.
-                  timer.cancel();
-                }
-              });
+        actionKey = InkWell(
+            onTap: () {
+              _onKeyPress(key);
             },
-            onLongPressUp: () {
-              // Cancel event loop
-              longPress = false;
+            onLongPress: () {
+              textController.clear();
             },
             child: Container(
               height: double.infinity,
