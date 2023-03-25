@@ -35,7 +35,7 @@ class DragoVirtualKeyboard extends StatefulWidget {
     this.builder,
     this.onReturn,
     this.isOnChange = false,
-    this.height = _virtualKeyboardDefaultHeight,
+    this.height = 0,
     this.textColor = Colors.black,
     this.fontSize = 14,
     this.alwaysCaps = false,
@@ -65,13 +65,22 @@ class _DragoVirtualKeyboardState extends State<DragoVirtualKeyboard> {
 
   // True if shift is enabled.
   bool isShiftEnabled = false;
+  Timer? debounceTimer;
+  bool onSend = false;
 
   @override
   void didUpdateWidget(DragoVirtualKeyboard oldWidget) {
     super.didUpdateWidget(oldWidget);
+
     setState(() {
       type = widget.type;
-      height = widget.height;
+      if (widget.height == 0 &&
+          widget.type != VirtualKeyboardType.OnScreenAlphaNumeric) {
+        height = (widget.type == VirtualKeyboardType.Alphanumeric ? 300 : 280) +
+            (widget.isOnChange ? 0 : displayTextHeight);
+      } else {
+        height = widget.height;
+      }
       textColor = widget.textColor;
       fontSize = widget.fontSize;
       alwaysCaps = widget.alwaysCaps;
@@ -89,15 +98,29 @@ class _DragoVirtualKeyboardState extends State<DragoVirtualKeyboard> {
     super.initState();
 
     textController.addListener(() {
-      if (widget.isOnChange) {
-        widget.onReturn?.call(textController.text);
+      if (widget.isOnChange && !onSend) {
+        if (debounceTimer != null) {
+          debounceTimer!.cancel();
+        }
+        debounceTimer = Timer(Duration(milliseconds: 350), () {
+          if (mounted) {
+            widget.onReturn?.call(textController.text);
+          }
+        });
       } else {
+        onSend = false;
         setState(() {});
       }
     });
 
     type = widget.type;
-    height = widget.height;
+    if (widget.height == 0 &&
+        widget.type != VirtualKeyboardType.OnScreenAlphaNumeric) {
+      height = (widget.type == VirtualKeyboardType.Alphanumeric ? 300 : 280) +
+          (widget.isOnChange ? 0 : displayTextHeight);
+    } else {
+      height = widget.height;
+    }
     textColor = widget.textColor;
     fontSize = widget.fontSize;
     alwaysCaps = widget.alwaysCaps;
@@ -111,7 +134,78 @@ class _DragoVirtualKeyboardState extends State<DragoVirtualKeyboard> {
 
   @override
   Widget build(BuildContext context) {
-    return type == VirtualKeyboardType.Numeric ? _numeric() : _alphanumeric();
+    switch (type) {
+      case VirtualKeyboardType.Numeric:
+        return _numeric();
+      case VirtualKeyboardType.OnScreenAlphaNumeric:
+        return _onScreenAlphanumeric();
+      default:
+        return _alphanumeric();
+    }
+  }
+
+  Widget bindDisplayText() {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 20),
+      height: displayTextHeight,
+      child: type == VirtualKeyboardType.Numeric
+          ? Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Expanded(
+                    child: textController.text.isEmpty
+                        ? Container()
+                        : Center(
+                            child: Card(
+                                color: Colors.white,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(5),
+                                  child: Text(
+                                    textController.text,
+                                    textAlign: TextAlign.center,
+                                  ),
+                                )),
+                          )),
+                if (type == VirtualKeyboardType.Numeric)
+                  IconButton(
+                    icon: Icon(
+                      Icons.arrow_circle_right_rounded,
+                      color: textColor,
+                      size: 30,
+                    ),
+                    onPressed: () {
+                      widget.onReturn!.call(textController.text);
+                      onSend = true;
+                      textController.clear();
+                    },
+                  )
+              ],
+            )
+          : Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                textController.text.isEmpty
+                    ? Container()
+                    : Card(
+                        color: Colors.white,
+                        child: Padding(
+                          padding: const EdgeInsets.all(5),
+                          child: Text(
+                            textController.text,
+                            textAlign: TextAlign.center,
+                          ),
+                        )),
+              ],
+            ),
+    );
+  }
+
+  Widget _onScreenAlphanumeric() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [if (!widget.isOnChange) bindDisplayText(), ..._rows()],
+    );
   }
 
   Widget _alphanumeric() {
@@ -121,29 +215,7 @@ class _DragoVirtualKeyboardState extends State<DragoVirtualKeyboard> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          if (!widget.isOnChange)
-            SizedBox(
-              height: displayTextHeight,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  textController.text.isEmpty
-                      ? Container()
-                      : Card(
-                          color: Colors.white,
-                          child: Padding(
-                            padding: const EdgeInsets.all(5),
-                            child: Text(
-                              textController.text,
-                              textAlign: TextAlign.center,
-                            ),
-                          )),
-                ],
-              ),
-            ),
-          ..._rows()
-        ],
+        children: [if (!widget.isOnChange) bindDisplayText(), ..._rows()],
       ),
     );
   }
@@ -155,7 +227,7 @@ class _DragoVirtualKeyboardState extends State<DragoVirtualKeyboard> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.center,
-        children: _rows(),
+        children: [if (!widget.isOnChange) bindDisplayText(), ..._rows()],
       ),
     );
   }
@@ -166,49 +238,56 @@ class _DragoVirtualKeyboardState extends State<DragoVirtualKeyboard> {
     List<List<VirtualKeyboardKey>> keyboardRows =
         type == VirtualKeyboardType.Numeric
             ? _getKeyboardRowsNumeric()
-            : _getKeyboardRows(widget.isOnChange);
+            : type == VirtualKeyboardType.OnScreenAlphaNumeric
+                ? _getOnscreenAlphaKeyboard(widget.isOnChange)
+                : _getKeyboardRows(widget.isOnChange);
 
     // Generate keyboard row.
     List<Widget> rows = List.generate(keyboardRows.length, (int rowNum) {
       return Material(
         color: Colors.transparent,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          // Generate keboard keys
-          children: List.generate(
-            keyboardRows[rowNum].length,
-            (int keyNum) {
-              // Get the VirtualKeyboardKey object.
-              VirtualKeyboardKey virtualKeyboardKey =
-                  keyboardRows[rowNum][keyNum];
+        child: Padding(
+          padding: type == VirtualKeyboardType.OnScreenAlphaNumeric
+              ? EdgeInsets.symmetric(vertical: 9)
+              : EdgeInsets.zero,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            // Generate keboard keys
+            children: List.generate(
+              keyboardRows[rowNum].length,
+              (int keyNum) {
+                // Get the VirtualKeyboardKey object.
+                VirtualKeyboardKey virtualKeyboardKey =
+                    keyboardRows[rowNum][keyNum];
 
-              Widget keyWidget;
+                Widget keyWidget;
 
-              // Check if builder is specified.
-              // Call builder function if specified or use default
-              //  Key widgets if not.
-              if (builder == null) {
-                // Check the key type.
-                switch (virtualKeyboardKey.keyType) {
-                  case VirtualKeyboardKeyType.String:
-                    // Draw String key.
-                    keyWidget = _keyboardDefaultKey(virtualKeyboardKey);
-                    break;
-                  case VirtualKeyboardKeyType.Action:
-                    // Draw action key.
-                    keyWidget = _keyboardDefaultActionKey(virtualKeyboardKey);
-                    break;
+                // Check if builder is specified.
+                // Call builder function if specified or use default
+                //  Key widgets if not.
+                if (builder == null) {
+                  // Check the key type.
+                  switch (virtualKeyboardKey.keyType) {
+                    case VirtualKeyboardKeyType.String:
+                      // Draw String key.
+                      keyWidget = _keyboardDefaultKey(virtualKeyboardKey);
+                      break;
+                    case VirtualKeyboardKeyType.Action:
+                      // Draw action key.
+                      keyWidget = _keyboardDefaultActionKey(virtualKeyboardKey);
+                      break;
+                  }
+                } else {
+                  // Call the builder function, so the user can specify custom UI for keys.
+                  keyWidget = builder!(context, virtualKeyboardKey);
+
+                  throw 'builder function must return Widget';
                 }
-              } else {
-                // Call the builder function, so the user can specify custom UI for keys.
-                keyWidget = builder!(context, virtualKeyboardKey);
 
-                throw 'builder function must return Widget';
-              }
-
-              return keyWidget;
-            },
+                return keyWidget;
+              },
+            ),
           ),
         ),
       );
@@ -222,22 +301,34 @@ class _DragoVirtualKeyboardState extends State<DragoVirtualKeyboard> {
 
   /// Creates default UI element for keyboard Key.
   Widget _keyboardDefaultKey(VirtualKeyboardKey key) {
-    return Expanded(
-        child: InkWell(
-      onTap: () {
-        _onKeyPress(key);
-      },
-      child: Container(
-        height: height / (_keyRows.length + (widget.isOnChange ? 0 : 1)),
-        child: Center(
-            child: Text(
-          alwaysCaps
-              ? key.capsText!
-              : (isShiftEnabled ? key.capsText! : key.text!),
-          style: textStyle,
-        )),
-      ),
-    ));
+    return widget.type == VirtualKeyboardType.OnScreenAlphaNumeric
+        ? IconButton(
+            onPressed: () {
+              _onKeyPress(key);
+            },
+            icon: Text(
+              alwaysCaps
+                  ? key.capsText!
+                  : (isShiftEnabled ? key.capsText! : key.text!),
+              style: textStyle,
+            ))
+        : Expanded(
+            child: InkWell(
+            onTap: () {
+              _onKeyPress(key);
+            },
+            child: Container(
+              height: (height - (widget.isOnChange ? 0 : displayTextHeight)) /
+                  _keyRows.length,
+              child: Center(
+                  child: Text(
+                alwaysCaps
+                    ? key.capsText!
+                    : (isShiftEnabled ? key.capsText! : key.text!),
+                style: textStyle,
+              )),
+            ),
+          ));
   }
 
   void _onKeyPress(VirtualKeyboardKey key) {
@@ -261,6 +352,8 @@ class _DragoVirtualKeyboardState extends State<DragoVirtualKeyboard> {
         case VirtualKeyboardKeyAction.Done:
           {
             widget.onReturn!.call(textController.text);
+            onSend = true;
+            textController.clear();
             break;
           }
         default:
@@ -325,25 +418,30 @@ class _DragoVirtualKeyboardState extends State<DragoVirtualKeyboard> {
         break;
     }
 
-    return Expanded(
-      child: InkWell(
-        onTap: () {
-          if (key.action == VirtualKeyboardKeyAction.Shift) {
-            if (!alwaysCaps) {
-              setState(() {
-                isShiftEnabled = !isShiftEnabled;
-              });
-            }
-          }
+    _onTap() {
+      if (key.action == VirtualKeyboardKeyAction.Shift) {
+        if (!alwaysCaps) {
+          setState(() {
+            isShiftEnabled = !isShiftEnabled;
+          });
+        }
+      }
 
-          _onKeyPress(key);
-        },
-        child: Container(
-          alignment: Alignment.center,
-          height: height / (_keyRows.length + (widget.isOnChange ? 0 : 1)),
-          child: actionKey,
-        ),
-      ),
-    );
+      _onKeyPress(key);
+    }
+
+    return widget.type == VirtualKeyboardType.OnScreenAlphaNumeric
+        ? IconButton(onPressed: () => _onTap(), icon: Center(child: actionKey))
+        : Expanded(
+            child: InkWell(
+              onTap: () => _onTap(),
+              child: Container(
+                alignment: Alignment.center,
+                height: (height - (widget.isOnChange ? 0 : displayTextHeight)) /
+                    _keyRows.length,
+                child: actionKey,
+              ),
+            ),
+          );
   }
 }

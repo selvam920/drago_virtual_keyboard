@@ -34,7 +34,10 @@ class _MyHomePageState extends State<MyHomePage> {
   // is true will show the numeric keyboard.
   bool isNumericMode = true;
 
+  bool isOnchange = false;
+
   late TextEditingController _controllerText;
+  var keyboardType = VirtualKeyboardType.Alphanumeric;
 
   @override
   void initState() {
@@ -49,47 +52,73 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title),
       ),
       body: Center(
-        child: Column(
+        child: Row(
           children: <Widget>[
-            Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-                child: TextField(
-                  controller: _controllerText,
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: 'Your text',
-                  ),
-                )),
-            SwitchListTile(
-              title: Text(
-                'Keyboard Type = ' +
-                    (isNumericMode
-                        ? 'VirtualKeyboardType.Numeric'
-                        : 'VirtualKeyboardType.Alphanumeric'),
+            SizedBox(
+              width: 500,
+              child: Column(
+                children: [
+                  Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 16),
+                      child: TextField(
+                        controller: _controllerText,
+                        decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                          labelText: 'Your text',
+                        ),
+                      )),
+                  SwitchListTile(
+                      title: Text('Is Onchange'),
+                      value: isOnchange,
+                      onChanged: (val) {
+                        setState(() {
+                          isOnchange = !isOnchange;
+                        });
+                      }),
+                  SizedBox(height: 10),
+                  TextButton(
+                      onPressed: () {
+                        setState(() {
+                          keyboardType = VirtualKeyboardType.Numeric;
+                        });
+                      },
+                      child: Text('Numeric Keyboard')),
+                  SizedBox(height: 10),
+                  TextButton(
+                      onPressed: () {
+                        setState(() {
+                          keyboardType = VirtualKeyboardType.Alphanumeric;
+                        });
+                      },
+                      child: Text('AlphaNumeric Keyboard')),
+                  SizedBox(height: 10),
+                  TextButton(
+                      onPressed: () {
+                        setState(() {
+                          keyboardType =
+                              VirtualKeyboardType.OnScreenAlphaNumeric;
+                        });
+                      },
+                      child: Text('Onscreen AlphaNumeric Keyboard'))
+                ],
               ),
-              value: isNumericMode,
-              onChanged: (val) {
-                setState(() {
-                  isNumericMode = val;
-                });
-              },
             ),
             Expanded(
-              child: Container(),
-            ),
-            Container(
-              color: Colors.deepPurple,
-              child: DragoVirtualKeyboard(
-                height: 300 + 37,
-                textColor: Colors.white,
-                type: isNumericMode
-                    ? VirtualKeyboardType.Numeric
-                    : VirtualKeyboardType.Alphanumeric,
-                isOnChange: false,
-                onReturn: (val) {
-                  print(val);
-                },
+              child: Center(
+                child: Container(
+                  width:
+                      keyboardType == VirtualKeyboardType.Numeric ? 300 : null,
+                  color: Colors.deepPurple,
+                  child: DragoVirtualKeyboard(
+                    textColor: Colors.white,
+                    type: keyboardType,
+                    isOnChange: isOnchange,
+                    onReturn: (val) {
+                      _controllerText.text = val;
+                    },
+                  ),
+                ),
               ),
             )
           ],
