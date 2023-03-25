@@ -1,7 +1,5 @@
 part of drago_virtual_keyboard;
 
-const int _virtualKeyboardBackspaceEventPerioud = 20;
-
 /// Virtual Keyboard widget.
 class DragoVirtualKeyboard extends StatefulWidget {
   /// Keyboard Type: Should be inited in creation time.
@@ -40,13 +38,12 @@ class DragoVirtualKeyboard extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<StatefulWidget> createState() {
-    return _DragoVirtualKeyboardState();
-  }
+  DragoVirtualKeyboardPageState createState() =>
+      DragoVirtualKeyboardPageState();
 }
 
 /// Holds the state for Virtual Keyboard class.
-class _DragoVirtualKeyboardState extends State<DragoVirtualKeyboard> {
+class DragoVirtualKeyboardPageState extends State<DragoVirtualKeyboard> {
   VirtualKeyboardType? type;
   // The builder function will be called for each Key object.
   Widget Function(BuildContext context, VirtualKeyboardKey key)? builder;
