@@ -3,7 +3,7 @@
   "packages": [
     {
       "name": "async",
-      "rootUri": "file:///C:/Users/sksso/AppData/Local/Pub/Cache/hosted/pub.dev/async-2.10.0",
+      "rootUri": "file:///C:/Users/sksso/AppData/Local/Pub/Cache/hosted/pub.dev/async-2.11.0",
       "packageUri": "lib/",
       "languageVersion": "2.18"
     },
@@ -15,7 +15,7 @@
     },
     {
       "name": "characters",
-      "rootUri": "file:///C:/Users/sksso/AppData/Local/Pub/Cache/hosted/pub.dev/characters-1.2.1",
+      "rootUri": "file:///C:/Users/sksso/AppData/Local/Pub/Cache/hosted/pub.dev/characters-1.3.0",
       "packageUri": "lib/",
       "languageVersion": "2.12"
     },
@@ -27,9 +27,9 @@
     },
     {
       "name": "collection",
-      "rootUri": "file:///C:/Users/sksso/AppData/Local/Pub/Cache/hosted/pub.dev/collection-1.17.0",
+      "rootUri": "file:///C:/Users/sksso/AppData/Local/Pub/Cache/hosted/pub.dev/collection-1.17.2",
       "packageUri": "lib/",
-      "languageVersion": "2.12"
+      "languageVersion": "2.18"
     },
     {
       "name": "fake_async",
@@ -39,57 +39,57 @@
     },
     {
       "name": "flutter",
-      "rootUri": "file:///D:/SW/flutter/flutter/packages/flutter",
+      "rootUri": "file:///D:/Software/flutter_windows_3.11.0-0.1.pre-beta/flutter/packages/flutter",
       "packageUri": "lib/",
-      "languageVersion": "2.17"
+      "languageVersion": "3.0"
     },
     {
       "name": "flutter_test",
-      "rootUri": "file:///D:/SW/flutter/flutter/packages/flutter_test",
+      "rootUri": "file:///D:/Software/flutter_windows_3.11.0-0.1.pre-beta/flutter/packages/flutter_test",
       "packageUri": "lib/",
-      "languageVersion": "2.17"
+      "languageVersion": "3.0"
     },
     {
       "name": "js",
-      "rootUri": "file:///C:/Users/sksso/AppData/Local/Pub/Cache/hosted/pub.dev/js-0.6.5",
+      "rootUri": "file:///C:/Users/sksso/AppData/Local/Pub/Cache/hosted/pub.dev/js-0.6.7",
       "packageUri": "lib/",
-      "languageVersion": "2.16"
+      "languageVersion": "2.19"
     },
     {
       "name": "matcher",
-      "rootUri": "file:///C:/Users/sksso/AppData/Local/Pub/Cache/hosted/pub.dev/matcher-0.12.13",
+      "rootUri": "file:///C:/Users/sksso/AppData/Local/Pub/Cache/hosted/pub.dev/matcher-0.12.16",
       "packageUri": "lib/",
       "languageVersion": "2.18"
     },
     {
       "name": "material_color_utilities",
-      "rootUri": "file:///C:/Users/sksso/AppData/Local/Pub/Cache/hosted/pub.dev/material_color_utilities-0.2.0",
+      "rootUri": "file:///C:/Users/sksso/AppData/Local/Pub/Cache/hosted/pub.dev/material_color_utilities-0.5.0",
       "packageUri": "lib/",
-      "languageVersion": "2.13"
+      "languageVersion": "2.17"
     },
     {
       "name": "meta",
-      "rootUri": "file:///C:/Users/sksso/AppData/Local/Pub/Cache/hosted/pub.dev/meta-1.8.0",
+      "rootUri": "file:///C:/Users/sksso/AppData/Local/Pub/Cache/hosted/pub.dev/meta-1.9.1",
       "packageUri": "lib/",
       "languageVersion": "2.12"
     },
     {
       "name": "path",
-      "rootUri": "file:///C:/Users/sksso/AppData/Local/Pub/Cache/hosted/pub.dev/path-1.8.2",
+      "rootUri": "file:///C:/Users/sksso/AppData/Local/Pub/Cache/hosted/pub.dev/path-1.8.3",
       "packageUri": "lib/",
       "languageVersion": "2.12"
     },
     {
       "name": "sky_engine",
-      "rootUri": "file:///D:/SW/flutter/flutter/bin/cache/pkg/sky_engine",
+      "rootUri": "file:///D:/Software/flutter_windows_3.11.0-0.1.pre-beta/flutter/bin/cache/pkg/sky_engine",
       "packageUri": "lib/",
-      "languageVersion": "2.12"
+      "languageVersion": "3.0"
     },
     {
       "name": "source_span",
-      "rootUri": "file:///C:/Users/sksso/AppData/Local/Pub/Cache/hosted/pub.dev/source_span-1.9.1",
+      "rootUri": "file:///C:/Users/sksso/AppData/Local/Pub/Cache/hosted/pub.dev/source_span-1.10.0",
       "packageUri": "lib/",
-      "languageVersion": "2.14"
+      "languageVersion": "2.18"
     },
     {
       "name": "stack_trace",
@@ -117,7 +117,7 @@
     },
     {
       "name": "test_api",
-      "rootUri": "file:///C:/Users/sksso/AppData/Local/Pub/Cache/hosted/pub.dev/test_api-0.4.16",
+      "rootUri": "file:///C:/Users/sksso/AppData/Local/Pub/Cache/hosted/pub.dev/test_api-0.6.0",
       "packageUri": "lib/",
       "languageVersion": "2.18"
     },
@@ -134,7 +134,7 @@
       "languageVersion": "2.19"
     }
   ],
-  "generated": "2023-03-25T06:25:32.092400Z",
+  "generated": "2023-06-23T13:20:58.190598Z",
   "generator": "pub",
-  "generatorVersion": "2.19.5"
+  "generatorVersion": "3.1.0-163.1.beta"
 }

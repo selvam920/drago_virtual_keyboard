@@ -1,7 +1,13 @@
 part of drago_virtual_keyboard;
 
+class DragoVirtualKeyboardController {
+  void Function()? clear;
+}
+
 /// Virtual Keyboard widget.
 class DragoVirtualKeyboard extends StatefulWidget {
+  final DragoVirtualKeyboardController? controller;
+
   /// Keyboard Type: Should be inited in creation time.
   final VirtualKeyboardType type;
   final bool isOnChange;
@@ -24,18 +30,19 @@ class DragoVirtualKeyboard extends StatefulWidget {
   /// Set to true if you want only to show Caps letters.
   final bool alwaysCaps;
 
-  DragoVirtualKeyboard({
-    Key? key,
-    required this.type,
-    this.builder,
-    this.onReturn,
-    this.forMobile = false,
-    this.isOnChange = false,
-    this.height = 0,
-    this.textColor = Colors.black,
-    this.fontSize = 14,
-    this.alwaysCaps = false,
-  }) : super(key: key);
+  DragoVirtualKeyboard(
+      {Key? key,
+      required this.type,
+      this.builder,
+      this.onReturn,
+      this.forMobile = false,
+      this.isOnChange = false,
+      this.height = 0,
+      this.textColor = Colors.black,
+      this.fontSize = 14,
+      this.alwaysCaps = false,
+      this.controller})
+      : super(key: key);
 
   @override
   DragoVirtualKeyboardPageState createState() =>
@@ -63,10 +70,19 @@ class DragoVirtualKeyboardPageState extends State<DragoVirtualKeyboard> {
   Timer? debounceTimer;
   bool onSend = false;
 
+  late DragoVirtualKeyboardController controller;
+
+  _clear() {
+    textController.clear();
+  }
+
   @override
   void initState() {
     super.initState();
-
+    if (widget.controller != null) {
+      controller = widget.controller!;
+      controller.clear = _clear;
+    }
     textController.addListener(() {
       if (widget.isOnChange && !onSend) {
         if (debounceTimer != null) {
