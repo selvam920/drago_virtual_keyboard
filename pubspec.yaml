@@ -1,10 +1,10 @@
 name: drago_virtual_keyboard
 description: A simple package for dispaying virtual keyboards on a devices like kiosks and ATMs. The library is written in Dart and has no native code dependancy. Forked from virtual_keyboard
-version: 0.0.5
+version: 0.0.6
 homepage: https://github.com/selvam920/drago_virtual_keyboard
 
 environment:
-  sdk: '>=2.19.2 <3.0.0'
+  sdk: '>=3.7.0 <4.0.0'
 
 dependencies:
   flutter:

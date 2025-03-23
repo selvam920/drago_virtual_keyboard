@@ -147,7 +147,6 @@ class DragoVirtualKeyboardPageState extends State<DragoVirtualKeyboard> {
                         ? Container()
                         : Center(
                             child: Card(
-                                color: Colors.white,
                                 child: Padding(
                                   padding: const EdgeInsets.all(5),
                                   child: Text(
