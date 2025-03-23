@@ -12,4 +12,7 @@ Added onscreen keyboard
 Added controller
 
 ## [0.0.6]
+Timer interval changed
+
+## [0.0.6]
 Upgrade flutter version to 3.7.0
