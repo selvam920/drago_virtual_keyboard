@@ -135,49 +135,35 @@ class DragoVirtualKeyboardPageState extends State<DragoVirtualKeyboard> {
   Widget bindDisplayText() {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 20),
-      height: displayTextHeight,
-      child:
-          type == VirtualKeyboardType.Numeric
-              ? Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Expanded(
-                    child:
-                        textController.text.isEmpty
-                            ? Container()
-                            : Center(
-                              child: Card(
-                                child: Padding(
-                                  padding: const EdgeInsets.all(5),
-                                  child: Text(
-                                    textController.text,
-                                    textAlign: TextAlign.center,
-                                  ),
-                                ),
-                              ),
-                            ),
-                  ),
-                  if (type == VirtualKeyboardType.Numeric)
-                    IconButton(
-                      icon: Icon(
-                        Icons.arrow_circle_right_rounded,
-                        color: textColor,
-                        size: 30,
+      height: displayTextHeight + 10,
+      child: type == VirtualKeyboardType.Numeric
+          ? textController.text.isEmpty
+                ? Container()
+                : Padding(
+                    padding: const EdgeInsets.only(top: 7),
+                    child: Card(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 20,
+                          vertical: 5,
+                        ),
+                        child: Text(
+                          textController.text,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                       ),
-                      onPressed: () {
-                        widget.onReturn!.call(textController.text);
-                        onSend = true;
-                        textController.clear();
-                      },
                     ),
-                ],
-              )
-              : Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  textController.text.isEmpty
-                      ? Container()
-                      : Card(
+                  )
+          : Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                textController.text.isEmpty
+                    ? Container()
+                    : Card(
                         color: Colors.white,
                         child: Padding(
                           padding: const EdgeInsets.all(5),
@@ -187,8 +173,8 @@ class DragoVirtualKeyboardPageState extends State<DragoVirtualKeyboard> {
                           ),
                         ),
                       ),
-                ],
-              ),
+              ],
+            ),
     );
   }
 
@@ -219,7 +205,22 @@ class DragoVirtualKeyboardPageState extends State<DragoVirtualKeyboard> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.center,
-        children: [if (!widget.isOnChange) bindDisplayText(), ..._rows()],
+        children: [
+          if (!widget.isOnChange) bindDisplayText(),
+          ..._rows(),
+          if (!widget.isOnChange)
+            SizedBox(
+              height: 60,
+              width: double.infinity,
+              child: MaterialButton(
+                onPressed: () {},
+                child: Text(
+                  'OK',
+                  style: TextStyle(fontSize: 18, color: textColor),
+                ),
+              ),
+            ),
+        ],
       ),
     );
   }
@@ -229,20 +230,19 @@ class DragoVirtualKeyboardPageState extends State<DragoVirtualKeyboard> {
     // Get the keyboard Rows
     List<List<VirtualKeyboardKey>> keyboardRows =
         type == VirtualKeyboardType.Numeric
-            ? _getKeyboardRowsNumeric()
-            : type == VirtualKeyboardType.OnScreenAlphaNumeric
-            ? _getOnscreenAlphaKeyboard(widget.isOnChange)
-            : _getKeyboardRows(widget.isOnChange);
+        ? _getKeyboardRowsNumeric()
+        : type == VirtualKeyboardType.OnScreenAlphaNumeric
+        ? _getOnscreenAlphaKeyboard(widget.isOnChange)
+        : _getKeyboardRows(widget.isOnChange);
 
     // Generate keyboard row.
     List<Widget> rows = List.generate(keyboardRows.length, (int rowNum) {
       return Material(
         color: Colors.transparent,
         child: Padding(
-          padding:
-              type == VirtualKeyboardType.OnScreenAlphaNumeric
-                  ? EdgeInsets.symmetric(vertical: 9)
-                  : EdgeInsets.zero,
+          padding: type == VirtualKeyboardType.OnScreenAlphaNumeric
+              ? EdgeInsets.symmetric(vertical: 9)
+              : EdgeInsets.zero,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -293,36 +293,36 @@ class DragoVirtualKeyboardPageState extends State<DragoVirtualKeyboard> {
   Widget _keyboardDefaultKey(VirtualKeyboardKey key) {
     return widget.type == VirtualKeyboardType.OnScreenAlphaNumeric
         ? IconButton(
-          onPressed: () {
-            _onKeyPress(key);
-          },
-          icon: Text(
-            alwaysCaps
-                ? key.capsText!
-                : (isShiftEnabled ? key.capsText! : key.text!),
-            style: textStyle,
-          ),
-        )
-        : Expanded(
-          child: InkWell(
-            onTap: () {
+            onPressed: () {
               _onKeyPress(key);
             },
-            child: Container(
-              height:
-                  (height - (widget.isOnChange ? 0 : displayTextHeight)) /
-                  _keyRows.length,
-              child: Center(
-                child: Text(
-                  alwaysCaps
-                      ? key.capsText!
-                      : (isShiftEnabled ? key.capsText! : key.text!),
-                  style: textStyle,
+            icon: Text(
+              alwaysCaps
+                  ? key.capsText!
+                  : (isShiftEnabled ? key.capsText! : key.text!),
+              style: textStyle,
+            ),
+          )
+        : Expanded(
+            child: InkWell(
+              onTap: () {
+                _onKeyPress(key);
+              },
+              child: Container(
+                height:
+                    (height - (widget.isOnChange ? 0 : displayTextHeight)) /
+                    _keyRows.length,
+                child: Center(
+                  child: Text(
+                    alwaysCaps
+                        ? key.capsText!
+                        : (isShiftEnabled ? key.capsText! : key.text!),
+                    style: textStyle,
+                  ),
                 ),
               ),
             ),
-          ),
-        );
+          );
   }
 
   void _onKeyPress(VirtualKeyboardKey key) {
@@ -410,18 +410,21 @@ class DragoVirtualKeyboardPageState extends State<DragoVirtualKeyboard> {
     }
 
     return widget.type == VirtualKeyboardType.OnScreenAlphaNumeric
-        ? IconButton(onPressed: () => _onTap(), icon: Center(child: actionKey))
+        ? IconButton(
+            onPressed: () => _onTap(),
+            icon: Center(child: actionKey),
+          )
         : Expanded(
-          child: InkWell(
-            onTap: () => _onTap(),
-            child: Container(
-              alignment: Alignment.center,
-              height:
-                  (height - (widget.isOnChange ? 0 : displayTextHeight)) /
-                  _keyRows.length,
-              child: actionKey,
+            child: InkWell(
+              onTap: () => _onTap(),
+              child: Container(
+                alignment: Alignment.center,
+                height:
+                    (height - (widget.isOnChange ? 0 : displayTextHeight)) /
+                    _keyRows.length,
+                child: actionKey,
+              ),
             ),
-          ),
-        );
+          );
   }
 }

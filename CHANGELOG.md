@@ -16,3 +16,6 @@ Timer interval changed
 
 ## [0.0.7]
 Upgrade flutter version to 3.7.0
+
+## [0.0.8]
+Upgrade flutter version to 3.8.0

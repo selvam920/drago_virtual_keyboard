@@ -136,6 +136,7 @@ class MyHomePageState extends State<MyHomePage> {
                     onReturn: (val) {
                       _controllerText.text = val;
                     },
+                    height: 500,
                   ),
                 ),
               ),
