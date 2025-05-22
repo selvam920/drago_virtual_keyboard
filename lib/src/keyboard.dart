@@ -212,11 +212,21 @@ class DragoVirtualKeyboardPageState extends State<DragoVirtualKeyboard> {
             SizedBox(
               height: 60,
               width: double.infinity,
-              child: MaterialButton(
-                onPressed: () {},
-                child: Text(
-                  'OK',
-                  style: TextStyle(fontSize: 18, color: textColor),
+              child: Padding(
+                padding: EdgeInsetsGeometry.symmetric(horizontal: 10),
+                child: MaterialButton(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  onPressed: () {
+                    widget.onReturn!.call(textController.text);
+                    onSend = true;
+                    textController.clear();
+                  },
+                  child: Text(
+                    'OK',
+                    style: TextStyle(fontSize: 18, color: textColor),
+                  ),
                 ),
               ),
             ),

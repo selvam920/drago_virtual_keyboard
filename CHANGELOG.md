@@ -19,3 +19,6 @@ Upgrade flutter version to 3.7.0
 
 ## [0.0.8]
 Upgrade flutter version to 3.8.0
+
+## [0.0.9]
+Bug fixes
