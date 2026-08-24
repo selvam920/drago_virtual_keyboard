@@ -22,3 +22,6 @@ Upgrade flutter version to 3.8.0
 
 ## [0.0.9]
 Bug fixes
+
+## [1.0.0]
+Migrated to material ui

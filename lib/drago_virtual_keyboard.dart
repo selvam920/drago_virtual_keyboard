@@ -1,7 +1,7 @@
 library drago_virtual_keyboard;
 
 import 'dart:async';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 part './src/key_action.dart';
 part './src/key_type.dart';
