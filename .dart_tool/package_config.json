@@ -33,7 +33,7 @@
     },
     {
       "name": "cupertino_ui",
-      "rootUri": "file:///E:/dev/pub/hosted/pub.dev/cupertino_ui-1.0.0",
+      "rootUri": "file:///E:/dev/pub/hosted/pub.dev/cupertino_ui-1.0.1",
       "packageUri": "lib/",
       "languageVersion": "3.12"
     },
@@ -99,7 +99,7 @@
     },
     {
       "name": "material_ui",
-      "rootUri": "file:///E:/dev/pub/hosted/pub.dev/material_ui-1.0.1",
+      "rootUri": "file:///E:/dev/pub/hosted/pub.dev/material_ui-1.1.0",
       "packageUri": "lib/",
       "languageVersion": "3.12"
     },
